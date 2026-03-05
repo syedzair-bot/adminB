@@ -7,7 +7,9 @@ const UniversityInfoField = ({
     onChange,
     placeholder = 'Enter value...',
     sourceText,
-    onUseSource
+    onUseSource,
+    type = 'text',
+    options = []
 }) => {
     return (
         <div className="uni-info-field-container">
@@ -24,15 +26,30 @@ const UniversityInfoField = ({
                 )}
             </div>
 
-            {/* Input */}
+            {/* Input or Dropdown */}
             <div className="uni-field-input-wrapper">
-                <input
-                    type="text"
-                    className="uni-field-input"
-                    value={value}
-                    onChange={onChange}
-                    placeholder={placeholder}
-                />
+                {type === 'dropdown' ? (
+                    <select
+                        className="uni-field-input"
+                        value={value}
+                        onChange={onChange}
+                    >
+                        <option value="">Select...</option>
+                        {(options || []).map((opt, idx) => (
+                            <option key={idx} value={opt}>
+                                {opt}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        type="text"
+                        className="uni-field-input"
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                    />
+                )}
             </div>
 
             {/* Source Display */}

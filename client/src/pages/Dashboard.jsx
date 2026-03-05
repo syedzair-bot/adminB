@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import '../components/Sidebar.css';
 import './Dashboard.css';
@@ -8,27 +8,50 @@ import SearchBar from '../components/dashboard/SearchBar';
 import UniversityTable from '../components/dashboard/UniversityTable';
 import Pagination from '../components/dashboard/Pagination';
 
-// Dummy data — replace with API data later
-const universityData = [
-    { name: 'Indian Institute of Science', id: 'IISC8F2Q', location: 'Bengaluru, Karnataka', status: 'IN PROGRESS', progress: 45 },
-    { name: 'Jawaharlal Nehru University (JNU)', id: 'JNU4M9X', location: 'New Delhi, Delhi', status: 'DRAFT', progress: 70 },
-    { name: 'BITS Pilani', id: 'BITS7QK2', location: 'Pilani, Rajasthan', status: 'LIVE', progress: 100 },
-    { name: 'University of Delhi', id: 'DU9F3A7', location: 'Delhi, Delhi', status: 'IN PROGRESS', progress: 60 },
-    { name: 'IIT Bombay', id: 'IITB5X9M', location: 'Mumbai, Maharashtra', status: 'LIVE', progress: 100 },
-    { name: 'IIT Delhi', id: 'IITD2Q7K', location: 'New Delhi, Delhi', status: 'DRAFT', progress: 25 },
-    { name: 'Vellore Institute of Technology', id: 'VIT8M4Q', location: 'Vellore, Tamil Nadu', status: 'IN PROGRESS', progress: 72 },
-    { name: 'Manipal Academy of Higher Education', id: 'MAHE6X9P', location: 'Manipal, Karnataka', status: 'LIVE', progress: 100 },
-];
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 const ITEMS_PER_PAGE = 8;
 
 const Dashboard = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [universities, setUniversities] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch universities from the API on mount
+    useEffect(() => {
+        const fetchUniversities = async () => {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/universities/all`);
+                if (res.ok) {
+                    const data = await res.json();
+                    // Map API data to the shape expected by UniversityTable
+                    const mapped = (data || []).map(u => ({
+                        id: u.id,
+                        name: u.short_name || u.full_legal_name || 'Unnamed University',
+                        location: [u.city, u.state].filter(Boolean).join(', ') || '-',
+                        status: 'PENDING',
+                        progress: 0,
+                    }));
+                    setUniversities(mapped);
+                }
+            } catch (err) {
+                console.error('Error fetching universities:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUniversities();
+    }, []);
+
+    // Dynamic stats
+    const totalUniversities = universities.length;
+    const pendingVerification = universities.length; // all are pending for now
+    const liveOnCRM = 0;
+    const inDraft = 0;
 
     // Filter data based on search
-    const filteredData = universityData.filter((uni) => {
+    const filteredData = universities.filter((uni) => {
         const q = searchQuery.toLowerCase();
         return (
             uni.name.toLowerCase().includes(q) ||
@@ -62,10 +85,10 @@ const Dashboard = () => {
                             <h1 className="dashboard-title">Dashboard</h1>
                         </div>
                         <div className="stats-row">
-                            <StatsCard label="Total Universities" value="142" />
-                            <StatsCard label="Pending Verification" value="28" />
-                            <StatsCard label="Live on CRM" value="86" />
-                            <StatsCard label="In Draft" value="28" />
+                            <StatsCard label="Total Universities" value={String(totalUniversities)} />
+                            <StatsCard label="Pending Verification" value={String(pendingVerification)} />
+                            <StatsCard label="Live on CRM" value={String(liveOnCRM)} />
+                            <StatsCard label="In Draft" value={String(inDraft)} />
                         </div>
                     </div>
 
@@ -85,12 +108,18 @@ const Dashboard = () => {
                             <SearchBar value={searchQuery} onChange={(val) => { setSearchQuery(val); setCurrentPage(1); }} />
                         </div>
 
-                        <UniversityTable data={paginatedData} />
+                        {loading ? (
+                            <div style={{ textAlign: 'center', padding: '40px 0', fontFamily: 'Manrope, sans-serif', color: '#66758A', fontSize: '14px' }}>
+                                Loading universities...
+                            </div>
+                        ) : (
+                            <UniversityTable data={paginatedData} />
+                        )}
 
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages > 10 ? 10 : totalPages}
-                            totalResults={16}
+                            totalResults={totalResults}
                             perPage={ITEMS_PER_PAGE}
                             onPageChange={handlePageChange}
                         />

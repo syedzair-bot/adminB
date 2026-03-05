@@ -15,6 +15,18 @@ const signup = async (req, res) => {
         if (error) {
             throw new Error(error.message);
         }
+
+        // Create profile row linked to auth user
+        if (data.user) {
+            const { error: profileError } = await supabase
+                .from('user_profiles')
+                .insert([{ id: data.user.id, email }]);
+
+            if (profileError) {
+                console.error('Error creating user profile:', profileError.message);
+            }
+        }
+
         res.status(200).json({ "User created successfully": data });
 
     } catch (error) {
@@ -37,10 +49,6 @@ const signin = async (req, res) => {
         if (error) {
             throw new Error(error.message);
         }
-        // Log access token for debugging - use this in Postman
-        console.log('=== ACCESS TOKEN ===');
-        console.log(data.session.access_token);
-        console.log('====================');
         res.status(200).json({ "User logged in Successfully": data });
     }
     catch (error) {
@@ -61,8 +69,23 @@ const signout = async (req, res) => {
 }
 const getUser = async (req, res) => {
     try {
-        res.status(200).json({ "User": req.user });
+        // Fetch profile data from user_profiles table
+        const { data, error } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', req.user.id)
+            .single();
 
+        if (error && error.code !== 'PGRST116') {
+            console.error('Error fetching user profile:', error.message);
+        }
+
+        res.status(200).json({
+            User: {
+                ...req.user,
+                profile: data || null,
+            }
+        });
     } catch (error) {
         res.status(500).json(error.message);
     }

@@ -10,6 +10,7 @@ const UniversityTable = ({ data }) => {
         <div className="table-wrapper">
             {/* Table Header */}
             <div className="table-header">
+                <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>SR NO</div>
                 <div className="table-col col-name">UNIVERSITY NAME</div>
                 <div className="table-col col-id">UNIVERSITY ID</div>
                 <div className="table-col col-location">LOCATION</div>
@@ -25,6 +26,7 @@ const UniversityTable = ({ data }) => {
                     onClick={() => navigate(`/dashboard/university/${uni.id}`, { state: { universityData: uni } })}
                     style={{ cursor: 'pointer' }}
                 >
+                    <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>{index + 1}</div>
                     <div className="table-col col-name">
                         <div className="uni-avatar">
                             <span>{uni.name.charAt(0)}</span>

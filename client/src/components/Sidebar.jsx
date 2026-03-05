@@ -7,8 +7,22 @@ const Sidebar = ({ onToggle }) => {
     const [activeItem, setActiveItem] = useState('dashboard');
     const [collapsed, setCollapsed] = useState(false);
 
+    // Derive display name and initials from stored email
+    const userEmail = localStorage.getItem('userEmail') || '';
+    const getUserDisplayInfo = (email) => {
+        if (!email) return { name: 'User', initials: 'U' };
+        const localPart = email.split('@')[0]; // e.g. "keshav.laddha"
+        const parts = localPart.split(/[._-]/).filter(Boolean); // split by . _ or -
+        const name = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+        const initials = parts.map(p => p.charAt(0).toUpperCase()).slice(0, 2).join('');
+        return { name, initials };
+    };
+    const { name: userName, initials: userInitials } = getUserDisplayInfo(userEmail);
+
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userId');
         navigate('/');
     };
 
@@ -112,9 +126,9 @@ const Sidebar = ({ onToggle }) => {
             <div className="sidebar-bottom">
                 <div className="sidebar-bottom-item">
                     <div className="sidebar-avatar">
-                        <span>JD</span>
+                        <span>{userInitials}</span>
                     </div>
-                    <span>John Doe</span>
+                    <span>{userName}</span>
                 </div>
 
                 <div className="sidebar-bottom-item">

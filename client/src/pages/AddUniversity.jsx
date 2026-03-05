@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import '../components/Sidebar.css';
 import './AddUniversity.css';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 const AddUniversity = () => {
     const navigate = useNavigate();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

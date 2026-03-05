@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 const AuthPage = () => {
 
     const [email, setEmail] = useState('');
@@ -26,8 +26,13 @@ const AuthPage = () => {
             if (isSignUp) {
                 setMessage("Account created! Check your email for confirmation.");
             } else {
-                const token = res.data["User logged in Successfully"].session.access_token;
+                const loginData = res.data["User logged in Successfully"];
+                const token = loginData.session.access_token;
+                const userEmail = loginData.user?.email || '';
+                const userId = loginData.user?.id || '';
                 localStorage.setItem('token', token);
+                localStorage.setItem('userEmail', userEmail);
+                localStorage.setItem('userId', userId);
                 navigate('/dashboard', { replace: true });
             }
         } catch (err) {
@@ -37,6 +42,8 @@ const AuthPage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userId');
         setShowLogoutPopup(false);
         window.location.reload();
     };

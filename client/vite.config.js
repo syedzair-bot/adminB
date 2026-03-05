@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
           secure: false,
         },
       },
+      host: true,
     },
   }
 })

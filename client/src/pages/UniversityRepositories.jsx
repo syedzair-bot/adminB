@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import '../components/Sidebar.css';
@@ -9,31 +9,19 @@ import SearchBar from '../components/dashboard/SearchBar';
 import UniversityTable from '../components/dashboard/UniversityTable';
 import Pagination from '../components/dashboard/Pagination';
 
-// Dummy data
-const DUMMY_DATA = [
-    { name: 'Indian Institute of Science', id: 'IISC8F2Q', location: 'Bengaluru, Karnataka', status: 'IN PROGRESS', progress: 45 },
-    { name: 'Jawaharlal Nehru University (JNU)', id: 'JNU4M9X', location: 'New Delhi, Delhi', status: 'DRAFT', progress: 70 },
-    { name: 'BITS Pilani', id: 'BITS7QK2', location: 'Pilani, Rajasthan', status: 'LIVE', progress: 100 },
-    { name: 'University of Delhi', id: 'DU9F3A7', location: 'Delhi, Delhi', status: 'IN PROGRESS', progress: 60 },
-    { name: 'IIT Bombay', id: 'IITB5X9M', location: 'Mumbai, Maharashtra', status: 'LIVE', progress: 100 },
-    { name: 'IIT Delhi', id: 'IITD2Q7K', location: 'New Delhi, Delhi', status: 'DRAFT', progress: 25 },
-    { name: 'Vellore Institute of Technology', id: 'VIT8M4Q', location: 'Vellore, Tamil Nadu', status: 'IN PROGRESS', progress: 72 },
-    { name: 'Manipal Academy of Higher Education', id: 'MAHE6X9P', location: 'Manipal, Karnataka', status: 'LIVE', progress: 100 },
-];
-
 const ITEMS_PER_PAGE = 8;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const UniversityRepositories = () => {
     const navigate = useNavigate();
-    const [universityData, setUniversityData] = useState(DUMMY_DATA);
+    const [universityData, setUniversityData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     // Fetch data from API
-    React.useEffect(() => {
+    useEffect(() => {
         fetchUniversities();
     }, []);
 
@@ -42,25 +30,37 @@ const UniversityRepositories = () => {
             const response = await fetch(`${BACKEND_URL}/api/universities/all`);
             if (response.ok) {
                 const data = await response.json();
-                // Merge real data with dummy data (Real data first)
-                setUniversityData([...data, ...DUMMY_DATA]);
+                // Normalize API data to match table component expectations
+                const normalized = data.map(uni => ({
+                    ...uni,
+                    name: uni.short_name || uni.full_legal_name || uni.name || 'Unnamed',
+                    location: [uni.city, uni.state].filter(Boolean).join(', ') || '-',
+                    status: 'IN PROGRESS',
+                    progress: 0,
+                }));
+                setUniversityData(normalized);
             } else {
                 console.error('Failed to fetch universities');
-                // Keep dummy data if fetch fails
             }
         } catch (error) {
             console.error('Error fetching universities:', error);
-            // Keep dummy data if fetch error
         } finally {
             setLoading(false);
         }
     };
+
+    // Dynamic stats
+    const totalUniversities = universityData.length;
+    const pendingVerification = universityData.length;
+    const liveOnCRM = 0;
+    const inDraft = 0;
 
     // Filter data based on search
     const filteredData = universityData.filter((uni) => {
         const q = searchQuery.toLowerCase();
         return (
             uni.name.toLowerCase().includes(q) ||
+            (uni.id && uni.id.toLowerCase().includes(q)) ||
             (uni.location && uni.location.toLowerCase().includes(q))
         );
     });
@@ -90,10 +90,10 @@ const UniversityRepositories = () => {
                             <h1 className="dashboard-title">University Repositories</h1>
                         </div>
                         <div className="stats-row">
-                            <StatsCard label="Total Universities" value="142" />
-                            <StatsCard label="Pending Verification" value="28" />
-                            <StatsCard label="Live on CRM" value="86" />
-                            <StatsCard label="In Draft" value="28" />
+                            <StatsCard label="Total Universities" value={String(totalUniversities)} />
+                            <StatsCard label="Pending Verification" value={String(pendingVerification)} />
+                            <StatsCard label="Live on CRM" value={String(liveOnCRM)} />
+                            <StatsCard label="In Draft" value={String(inDraft)} />
                         </div>
                     </div>
 
@@ -121,12 +121,18 @@ const UniversityRepositories = () => {
                             </div>
                         </div>
 
-                        <UniversityTable data={paginatedData} />
+                        {loading ? (
+                            <div style={{ textAlign: 'center', padding: '40px 0', fontFamily: 'Manrope, sans-serif', color: '#66758A', fontSize: '14px' }}>
+                                Loading universities...
+                            </div>
+                        ) : (
+                            <UniversityTable data={paginatedData} />
+                        )}
 
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages > 10 ? 10 : totalPages}
-                            totalResults={16}
+                            totalResults={totalResults}
                             perPage={ITEMS_PER_PAGE}
                             onPageChange={handlePageChange}
                         />
