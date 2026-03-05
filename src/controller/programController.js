@@ -461,6 +461,8 @@ const deleteOffering = async (req, res) => {
         const { id } = req.params;
         const { error } = await supabase.from('program_offering').delete().eq('id', id);
         if (error) throw new Error(error.message);
+        // Also delete from sc_ table to prevent auto-sync re-creating it
+        await supabase.from('sc_program_offering').delete().eq('id', id);
         res.status(200).json({ message: 'Deleted successfully' });
     } catch (error) {
         console.error('Error deleting offering:', error);

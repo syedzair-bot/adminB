@@ -2271,27 +2271,27 @@ const UniversityDetails = () => {
                         </div>
                         {programs.length > 0 ? (
                             <div className="table-wrapper master-table" style={{ overflowX: 'auto' }}>
-                                <div className="table-header" style={{ minWidth: '800px' }}>
-                                    <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>SR NO</div>
-                                    <div className="table-col" style={{ width: '26%', minWidth: '180px' }}>PROGRAM NAME</div>
-                                    <div className="table-col" style={{ width: '14%', minWidth: '100px' }}>PROGRAM LEVEL</div>
-                                    <div className="table-col" style={{ width: '14%', minWidth: '100px' }}>GLOBAL DEGREE</div>
-                                    <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>DURATION</div>
-                                    <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>TOTAL CREDITS</div>
-                                    <div className="table-col" style={{ width: '20%', minWidth: '180px' }}>ACTIONS</div>
+                                <div className="table-header" style={{ minWidth: '1000px' }}>
+                                    <div className="table-col" style={{ width: '5%', minWidth: '45px' }}>SR NO</div>
+                                    <div className="table-col" style={{ width: '20%', minWidth: '160px' }}>PROGRAM NAME</div>
+                                    <div className="table-col" style={{ width: '12%', minWidth: '110px' }}>PROGRAM LEVEL</div>
+                                    <div className="table-col" style={{ width: '12%', minWidth: '110px' }}>GLOBAL DEGREE</div>
+                                    <div className="table-col" style={{ width: '9%', minWidth: '80px' }}>DURATION</div>
+                                    <div className="table-col" style={{ width: '10%', minWidth: '95px' }}>TOTAL CREDITS</div>
+                                    <div className="table-col" style={{ width: '23%', minWidth: '250px' }}>ACTIONS</div>
                                 </div>
                                 {programs.map((program, index) => (
-                                    <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={program.id} style={{ minWidth: '800px' }}>
-                                        <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>{index + 1}</div>
-                                        <div className="table-col" style={{ width: '26%', minWidth: '180px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={program.id} style={{ minWidth: '1000px' }}>
+                                        <div className="table-col" style={{ width: '5%', minWidth: '45px' }}>{index + 1}</div>
+                                        <div className="table-col" style={{ width: '20%', minWidth: '160px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <div className="uni-avatar" style={{ flexShrink: 0 }}><span>{(program.name || 'P').charAt(0)}</span></div>
                                             <span className="uni-name" style={{ flex: '1 1 0', minWidth: 0 }}>{program.name || 'Unnamed'}</span>
                                         </div>
-                                        <div className="table-col" style={{ width: '14%', minWidth: '100px' }}>{program.program_level || '-'}</div>
-                                        <div className="table-col" style={{ width: '14%', minWidth: '100px' }}>{program.global_degree_type || '-'}</div>
-                                        <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>{program.duration_months ? `${program.duration_months}m` : '-'}</div>
-                                        <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>{program.total_credits || '-'}</div>
-                                        <div className="table-col action-col" style={{ width: '20%', minWidth: '180px' }}>
+                                        <div className="table-col" style={{ width: '12%', minWidth: '110px' }}>{program.program_level || '-'}</div>
+                                        <div className="table-col" style={{ width: '12%', minWidth: '110px' }}>{program.global_degree_type || '-'}</div>
+                                        <div className="table-col" style={{ width: '9%', minWidth: '80px' }}>{program.duration_months ? `${program.duration_months}m` : '-'}</div>
+                                        <div className="table-col" style={{ width: '10%', minWidth: '95px' }}>{program.total_credits || '-'}</div>
+                                        <div className="table-col action-col" style={{ width: '32%', minWidth: '250px' }}>
                                             <button className="action-btn" onClick={async () => {
                                                 setSelectedProgram(program.id);
                                                 await handleProgramSelect(program.id);
@@ -2355,26 +2355,26 @@ const UniversityDetails = () => {
                         </div>
                         {allSpecializations.length > 0 ? (
                             <div className="table-wrapper master-table" style={{ overflowX: 'auto' }}>
-                                <div className="table-header" style={{ minWidth: '850px' }}>
-                                    <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>SR NO</div>
-                                    <div className="table-col" style={{ width: '20%', minWidth: '160px' }}>SPECIALIZATION NAME</div>
-                                    <div className="table-col" style={{ width: '18%', minWidth: '140px' }}>PROGRAM NAME</div>
-                                    <div className="table-col" style={{ width: '12%', minWidth: '100px' }}>PROGRAM LEVEL</div>
-                                    <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>MODE</div>
-                                    <div className="table-col" style={{ width: '8%', minWidth: '60px' }}>CREDITS</div>
-                                    <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>DURATION</div>
-                                    <div className="table-col" style={{ width: '20%', minWidth: '180px' }}>ACTIONS</div>
+                                <div className="table-header" style={{ minWidth: '1050px' }}>
+                                    <div className="table-col" style={{ width: '5%', minWidth: '45px' }}>SR NO</div>
+                                    <div className="table-col" style={{ width: '17%', minWidth: '150px' }}>SPECIALIZATION NAME</div>
+                                    <div className="table-col" style={{ width: '15%', minWidth: '130px' }}>PROGRAM NAME</div>
+                                    <div className="table-col" style={{ width: '10%', minWidth: '110px' }}>PROGRAM LEVEL</div>
+                                    <div className="table-col" style={{ width: '7%', minWidth: '60px' }}>MODE</div>
+                                    <div className="table-col" style={{ width: '7%', minWidth: '65px' }}>CREDITS</div>
+                                    <div className="table-col" style={{ width: '9%', minWidth: '75px' }}>DURATION</div>
+                                    <div className="table-col" style={{ width: '30%', minWidth: '250px' }}>ACTIONS</div>
                                 </div>
                                 {allSpecializations.map((spec, index) => (
-                                    <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={spec.id} style={{ minWidth: '850px' }}>
-                                        <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>{index + 1}</div>
-                                        <div className="table-col" style={{ width: '20%', minWidth: '160px' }}><span className="uni-name">{spec.specialization_name || '-'}</span></div>
-                                        <div className="table-col" style={{ width: '18%', minWidth: '140px' }}>{spec.program_name || '-'}</div>
-                                        <div className="table-col" style={{ width: '12%', minWidth: '100px' }}>{spec.program_level || '-'}</div>
-                                        <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>{spec.mode || '-'}</div>
-                                        <div className="table-col" style={{ width: '8%', minWidth: '60px' }}>{spec.total_credits || '-'}</div>
-                                        <div className="table-col" style={{ width: '10%', minWidth: '70px' }}>{spec.duration_months ? `${spec.duration_months}m` : '-'}</div>
-                                        <div className="table-col action-col" style={{ width: '20%', minWidth: '180px' }}>
+                                    <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={spec.id} style={{ minWidth: '1050px' }}>
+                                        <div className="table-col" style={{ width: '5%', minWidth: '45px' }}>{index + 1}</div>
+                                        <div className="table-col" style={{ width: '17%', minWidth: '150px' }}><span className="uni-name">{spec.specialization_name || '-'}</span></div>
+                                        <div className="table-col" style={{ width: '15%', minWidth: '130px' }}>{spec.program_name || '-'}</div>
+                                        <div className="table-col" style={{ width: '10%', minWidth: '110px' }}>{spec.program_level || '-'}</div>
+                                        <div className="table-col" style={{ width: '7%', minWidth: '60px' }}>{spec.mode || '-'}</div>
+                                        <div className="table-col" style={{ width: '7%', minWidth: '65px' }}>{spec.total_credits || '-'}</div>
+                                        <div className="table-col" style={{ width: '9%', minWidth: '75px' }}>{spec.duration_months ? `${spec.duration_months}m` : '-'}</div>
+                                        <div className="table-col action-col" style={{ width: '30%', minWidth: '250px' }}>
                                             <button className="action-btn" onClick={() => {
                                                 setSelectedCard('program-specialisation');
                                                 setSelectedProgram(spec.program_id);
@@ -2565,16 +2565,16 @@ const UniversityDetails = () => {
 
                         {allOfferings.length > 0 ? (
                             <div className="table-wrapper master-table" style={{ overflowX: 'auto' }}>
-                                <div className="table-header" style={{ minWidth: '900px' }}>
-                                    <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>SR NO</div>
-                                    <div className="table-col" style={{ width: '16%', minWidth: '130px' }}>SPECIALIZATION NAME</div>
-                                    <div className="table-col" style={{ width: '16%', minWidth: '130px' }}>PROGRAM NAME</div>
-                                    <div className="table-col" style={{ width: '12%', minWidth: '100px' }}>PROGRAM LEVEL</div>
-                                    <div className="table-col" style={{ width: '9%', minWidth: '65px' }}>MODE</div>
-                                    <div className="table-col" style={{ width: '8%', minWidth: '60px' }}>CREDITS</div>
-                                    <div className="table-col" style={{ width: '9%', minWidth: '70px' }}>DURATION</div>
-                                    <div className="table-col" style={{ width: '12%', minWidth: '90px' }}>MAX DURATION</div>
-                                    <div className="table-col" style={{ width: '16%', minWidth: '100px' }}>ACTIONS</div>
+                                <div className="table-header" style={{ minWidth: '1100px' }}>
+                                    <div className="table-col" style={{ width: '4%', minWidth: '45px' }}>SR NO</div>
+                                    <div className="table-col" style={{ width: '14%', minWidth: '140px' }}>SPECIALIZATION NAME</div>
+                                    <div className="table-col" style={{ width: '13%', minWidth: '130px' }}>PROGRAM NAME</div>
+                                    <div className="table-col" style={{ width: '9%', minWidth: '110px' }}>PROGRAM LEVEL</div>
+                                    <div className="table-col" style={{ width: '6%', minWidth: '55px' }}>MODE</div>
+                                    <div className="table-col" style={{ width: '7%', minWidth: '65px' }}>CREDITS</div>
+                                    <div className="table-col" style={{ width: '8%', minWidth: '75px' }}>DURATION</div>
+                                    <div className="table-col" style={{ width: '10%', minWidth: '100px' }}>MAX DURATION</div>
+                                    <div className="table-col" style={{ width: '29%', minWidth: '250px' }}>ACTIONS</div>
                                 </div>
                                 {allOfferings.map((offering, index) => {
                                     let specName = '-';
@@ -2586,17 +2586,33 @@ const UniversityDetails = () => {
                                         specName = found?.specialization_name || offering.sku_code || '-';
                                     }
                                     return (
-                                        <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={offering.id} style={{ minWidth: '900px' }}>
-                                            <div className="table-col" style={{ width: '6%', minWidth: '45px' }}>{index + 1}</div>
-                                            <div className="table-col" style={{ width: '16%', minWidth: '130px' }}><span className="uni-name">{specName}</span></div>
-                                            <div className="table-col" style={{ width: '16%', minWidth: '130px' }}>{offering.program_name || '-'}</div>
-                                            <div className="table-col" style={{ width: '12%', minWidth: '100px' }}>{offering.program_level || '-'}</div>
-                                            <div className="table-col" style={{ width: '9%', minWidth: '65px' }}>{offering.mode || '-'}</div>
-                                            <div className="table-col" style={{ width: '8%', minWidth: '60px' }}>{offering.total_credits || '-'}</div>
-                                            <div className="table-col" style={{ width: '9%', minWidth: '70px' }}>{offering.duration_months ? `${offering.duration_months}m` : '-'}</div>
-                                            <div className="table-col" style={{ width: '12%', minWidth: '90px' }}>{offering.max_duration_months ? `${offering.max_duration_months}m` : '-'}</div>
-                                            <div className="table-col action-col" style={{ width: '16%', minWidth: '100px' }}>
+                                        <div className={`table-row ${index % 2 === 0 ? 'row-light' : 'row-white'}`} key={offering.id} style={{ minWidth: '1100px' }}>
+                                            <div className="table-col" style={{ width: '4%', minWidth: '45px' }}>{index + 1}</div>
+                                            <div className="table-col" style={{ width: '14%', minWidth: '140px' }}><span className="uni-name">{specName}</span></div>
+                                            <div className="table-col" style={{ width: '13%', minWidth: '130px' }}>{offering.program_name || '-'}</div>
+                                            <div className="table-col" style={{ width: '9%', minWidth: '110px' }}>{offering.program_level || '-'}</div>
+                                            <div className="table-col" style={{ width: '6%', minWidth: '55px' }}>{offering.mode || '-'}</div>
+                                            <div className="table-col" style={{ width: '7%', minWidth: '65px' }}>{offering.total_credits || '-'}</div>
+                                            <div className="table-col" style={{ width: '8%', minWidth: '75px' }}>{offering.duration_months ? `${offering.duration_months}m` : '-'}</div>
+                                            <div className="table-col" style={{ width: '10%', minWidth: '100px' }}>{offering.max_duration_months ? `${offering.max_duration_months}m` : '-'}</div>
+                                            <div className="table-col action-col" style={{ width: '29%', minWidth: '250px' }}>
                                                 <button className="action-btn" onClick={() => { setSelectedProgram(offering.program_id); openOfferingModal(offering); }}>Edit</button>
+                                                <button className="action-btn" style={{ color: '#D32F2F', borderColor: '#D32F2F' }} onClick={() => {
+                                                    setConfirmDialog({
+                                                        message: 'Are you sure you want to delete this offering? All related curriculum, eligibility, fees, and addons will also be removed.',
+                                                        onConfirm: async () => {
+                                                            try {
+                                                                const res = await fetch(`${BACKEND_URL}/api/universities/offerings/${offering.id}`, { method: 'DELETE' });
+                                                                if (res.ok) {
+                                                                    showToast('Offering deleted successfully!');
+                                                                    await fetchAllOfferings();
+                                                                } else {
+                                                                    showToast('Failed to delete offering', 'error');
+                                                                }
+                                                            } catch (err) { console.error('Delete error:', err); showToast('Error deleting offering', 'error'); }
+                                                        },
+                                                    });
+                                                }}>Delete</button>
                                             </div>
                                         </div>
                                     );
