@@ -12,8 +12,24 @@ const universityRoutes = require('./src/routes/universityRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(helmet());
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:5173', 'http://localhost:3000', 'https://admin-seven-rust.vercel.app'];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Allow all for now
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}));
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(express.json()); // Parse JSON request bodies
 
 // Routes
