@@ -10,6 +10,7 @@ const AuthPage = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
     const navigate = useNavigate();
 
@@ -90,13 +91,51 @@ const AuthPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }}
+                    />
+                    <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{
+                            position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                            cursor: 'pointer', display: 'flex', alignItems: 'center',
+                            color: '#66758A', userSelect: 'none',
+                        }}
+                        title={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                        {showPassword ? (
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                            </svg>
+                        ) : (
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        )}
+                    </span>
+                </div>
+                {!isSignUp && (
+                    <div style={{ width: '100%', textAlign: 'right', marginTop: '-4px', marginBottom: '8px' }}>
+                        <span
+                            style={{
+                                fontSize: '13px', color: '#930051', cursor: 'pointer',
+                                fontFamily: 'Manrope, sans-serif', fontWeight: 500,
+                            }}
+                            onClick={() => { }}
+                        >
+                            Forgot Password?
+                        </span>
+                    </div>
+                )}
                 <button type="submit">{isSignUp ? "Sign Up" : "Sign In"}</button>
             </form>
 

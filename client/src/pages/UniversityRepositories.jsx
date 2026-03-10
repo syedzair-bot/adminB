@@ -19,6 +19,7 @@ const UniversityRepositories = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sortOrder, setSortOrder] = useState('desc');
 
     // Fetch data from API
     useEffect(() => {
@@ -27,7 +28,12 @@ const UniversityRepositories = () => {
 
     const fetchUniversities = async () => {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/universities/all`);
+            // Try new endpoint first, fallback to old one
+            let response = await fetch(`${BACKEND_URL}/api/universities/all-with-progress`);
+            let usedProgressEndpoint = response.ok;
+            if (!response.ok) {
+                response = await fetch(`${BACKEND_URL}/api/universities/all`);
+            }
             if (response.ok) {
                 const data = await response.json();
                 // Normalize API data to match table component expectations
@@ -35,8 +41,10 @@ const UniversityRepositories = () => {
                     ...uni,
                     name: uni.short_name || uni.full_legal_name || uni.name || 'Unnamed',
                     location: [uni.city, uni.state].filter(Boolean).join(', ') || '-',
-                    status: 'IN PROGRESS',
-                    progress: 0,
+                    status: usedProgressEndpoint
+                        ? (uni.progress === 100 ? 'LIVE' : uni.progress > 0 ? 'IN PROGRESS' : 'PENDING')
+                        : 'IN PROGRESS',
+                    progress: usedProgressEndpoint ? (uni.progress || 0) : 0,
                 }));
                 setUniversityData(normalized);
             } else {
@@ -65,9 +73,14 @@ const UniversityRepositories = () => {
         );
     });
 
-    const totalResults = filteredData.length;
+    // Sort filtered data by progress
+    const sortedData = [...filteredData].sort((a, b) =>
+        sortOrder === 'desc' ? b.progress - a.progress : a.progress - b.progress
+    );
+
+    const totalResults = sortedData.length;
     const totalPages = Math.max(1, Math.ceil(totalResults / ITEMS_PER_PAGE));
-    const paginatedData = filteredData.slice(
+    const paginatedData = sortedData.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
@@ -126,7 +139,7 @@ const UniversityRepositories = () => {
                                 Loading universities...
                             </div>
                         ) : (
-                            <UniversityTable data={paginatedData} />
+                            <UniversityTable data={paginatedData} sortOrder={sortOrder} onSortChange={setSortOrder} />
                         )}
 
                         <Pagination

@@ -17,12 +17,18 @@ const Dashboard = () => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [universities, setUniversities] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
 
     // Fetch universities from the API on mount
     useEffect(() => {
         const fetchUniversities = async () => {
             try {
-                const res = await fetch(`${BACKEND_URL}/api/universities/all`);
+                // Try new endpoint first, fallback to old one
+                let res = await fetch(`${BACKEND_URL}/api/universities/all-with-progress`);
+                let usedProgressEndpoint = res.ok;
+                if (!res.ok) {
+                    res = await fetch(`${BACKEND_URL}/api/universities/all`);
+                }
                 if (res.ok) {
                     const data = await res.json();
                     // Map API data to the shape expected by UniversityTable
@@ -30,8 +36,10 @@ const Dashboard = () => {
                         id: u.id,
                         name: u.short_name || u.full_legal_name || 'Unnamed University',
                         location: [u.city, u.state].filter(Boolean).join(', ') || '-',
-                        status: 'PENDING',
-                        progress: 0,
+                        status: usedProgressEndpoint
+                            ? (u.progress === 100 ? 'LIVE' : u.progress > 0 ? 'IN PROGRESS' : 'PENDING')
+                            : 'PENDING',
+                        progress: usedProgressEndpoint ? (u.progress || 0) : 0,
                     }));
                     setUniversities(mapped);
                 }
@@ -60,9 +68,14 @@ const Dashboard = () => {
         );
     });
 
-    const totalResults = filteredData.length;
+    // Sort filtered data by progress
+    const sortedData = [...filteredData].sort((a, b) =>
+        sortOrder === 'desc' ? b.progress - a.progress : a.progress - b.progress
+    );
+
+    const totalResults = sortedData.length;
     const totalPages = Math.max(1, Math.ceil(totalResults / ITEMS_PER_PAGE));
-    const paginatedData = filteredData.slice(
+    const paginatedData = sortedData.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
@@ -113,7 +126,7 @@ const Dashboard = () => {
                                 Loading universities...
                             </div>
                         ) : (
-                            <UniversityTable data={paginatedData} />
+                            <UniversityTable data={paginatedData} sortOrder={sortOrder} onSortChange={setSortOrder} />
                         )}
 
                         <Pagination

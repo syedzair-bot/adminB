@@ -486,10 +486,72 @@ const supportChannelsHandlers = createSubEntityHandlers(
     ['channel_type', 'contact_value', 'availability_hours', 'response_sla_hours', 'is_bot_enabled', 'is_emergency_contact']
 );
 
+// ── Progress calculation: count how many sections have data ──
+const PROGRESS_TABLES = [
+    'university_address',
+    'uni_metadata',
+    'university_ranking',
+    'university_accreditation',
+    'university_highlight',
+    'university_gallery',
+    'university_faq',
+    'university_faculty',
+    'hiring_partner',
+    'placement_stats',
+    'program_master',
+    'financing_options',
+    'support_channels',
+];
+
+const TOTAL_SECTIONS = PROGRESS_TABLES.length; // 13
+
+const getUniversitiesWithProgress = async (req, res) => {
+    try {
+        // 1. Fetch all universities
+        const { data: universities, error } = await supabase
+            .from('university')
+            .select('id, short_name, full_legal_name, university_main_link, is_active, created_at, updated_at')
+            .order('created_at', { ascending: false });
+
+        if (error) throw new Error(error.message);
+        if (!universities || universities.length === 0) return res.status(200).json([]);
+
+        // 2. For each table, fetch all university_ids that have data (one query per table)
+        const sectionSets = await Promise.all(
+            PROGRESS_TABLES.map(async (table) => {
+                try {
+                    const { data: rows, error: tErr } = await supabase
+                        .from(table)
+                        .select('university_id');
+                    if (tErr || !rows) return new Set();
+                    return new Set(rows.map(r => r.university_id));
+                } catch {
+                    return new Set();
+                }
+            })
+        );
+
+        // 3. Compute progress per university in JS
+        const results = universities.map(uni => {
+            const filledSections = sectionSets.filter(s => s.has(uni.id)).length;
+            return {
+                ...uni,
+                progress: Math.round((filledSections / TOTAL_SECTIONS) * 100),
+            };
+        });
+
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error fetching universities with progress:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     // Core university
     addUniversity,
     getUniversities,
+    getUniversitiesWithProgress,
     getUniversityById,
     updateUniversity,
     // Sub-entity handlers

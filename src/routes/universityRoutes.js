@@ -22,6 +22,7 @@ const upload = multer({ storage: storage });
 
 router.post('/add', upload.array('docs'), universityController.addUniversity);
 router.get('/all', universityController.getUniversities);
+router.get('/all-with-progress', universityController.getUniversitiesWithProgress);
 
 // NOTE: /:id routes moved to end of file so they don't catch
 // standalone paths like /offer-policies, /payout-rules, etc.
